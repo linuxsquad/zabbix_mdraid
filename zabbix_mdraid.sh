@@ -27,11 +27,11 @@ do
 	    ;;
 	"D")
 	    # echo "Discovery"
-	    echo -e "{\n\t\"data\":[\n"	    
-	    echo $(mdadm -Es) | while read line
+	    echo -e "{\n\t\"data\":["	    
+	    mdadm -Es | while read line
 	    do
 		MDdev=`echo $line | awk '{print $2}'`
-		echo -e "\t{ \"{#MD_DEVICE}\":\"${MDdev}\" },"
+		echo -e "\t{ \"{#MD_DEVICE}\":\t\"${MDdev}\" },"
 	    done
 	    echo -e "\n\t]\n}"	    
 	    ;;
