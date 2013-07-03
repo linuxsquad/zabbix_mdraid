@@ -36,5 +36,4 @@ Referrence:
 
 - https://www.kernel.org/doc/Documentation/md.txt
 - http://unix.stackexchange.com/questions/47163/whats-the-difference-between-mdadm-state-active-and-state-clean
-- thanks to volter, GNU/Colossus @ IRC #zabbix
-- thanks to LSI RAID 
+- Zabbix LSI RAID template https://www.zabbix.com/wiki/templates/start
