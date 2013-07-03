@@ -1,5 +1,5 @@
 
-Zabbix template design to handle Software RAID (MD) on Linux OS (auto-discovery)
+Zabbix template handles Software RAID (MD) on Linux
 ==================
 
 Design and Implementaion:
@@ -25,6 +25,10 @@ Append to zabbix_agentd.conf file
 
    UserParameter=mdraid[*], sudo /usr/local/bin/zabbix_mdraid.sh -m'$1' -$2'$3'
    UserParameter=mdraid.discovery, sudo /usr/local/bin/zabbix_mdraid.sh -D 
+
+Note
+----
+- don't forget to add zabbix user to sudoers 
 
 
 Referrence:
