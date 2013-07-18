@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+#
+#
+#
+#
+#
 
 
 item=""
@@ -8,17 +14,17 @@ do
     case "$optname" in
 	"e")
 	    # Extract string values
-	    item=$(mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}')
+	    item=$(/sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}')
 	    echo ${item// /}
             ;;
 	"s")
             # echo "Size of the array"
-	    item=$(mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}')
+	    item=$(/sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}')
 	    echo ${item%%\ \(*}
             ;;
 	"d")
             # echo "Devices in the array"
-	    item=$(mdadm --detail ${MD_dev} | tail -n+2 | grep "/dev/" | awk -v x=${OPTARG} '$4 == x {print $5,$6,$7}' )
+	    item=$(/sbin/mdadm --detail ${MD_dev} | tail -n+2 | grep "/dev/" | awk -v x=${OPTARG} '$4 == x {print $5,$6,$7}' )
 	    echo ${item}
             ;;
 	"m")
@@ -28,12 +34,12 @@ do
 	"D")
 	    # echo "Discovery"
 	    echo -e "{\n\t\"data\":["	    
-	    mdadm -Es | while read line
+	    cat /proc/mdstat | grep ^md | while read line
 	    do
-		MDdev=`echo $line | awk '{print $2}'`
-		echo -e "\t{ \"{#MD_DEVICE}\":\t\"${MDdev}\" },"
+		MDdev=`echo $line | awk '{print $1}'`
+		echo -e "\t{ \"{#MD_DEVICE}\":\t\"/dev/${MDdev}\" },"
 	    done
-	    echo -e "\n\t]\n}"	    
+	    echo -e "\t]\n}"	    
 	    ;;
 	"?")
             echo "Unknown option $OPTARG"
