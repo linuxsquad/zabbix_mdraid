@@ -1,31 +1,34 @@
 #!/bin/bash
 #
+# AUTHOR: <The Best Zabbix admin>
 #
+# DATE:   2013-12-31
 #
+# DESCRIPTION:     LLD for SW RAID (MDRAID)
 #
+# PRE-REQUISIT:    
 #
+# INPUT:      see below
 #
+# OUTPUT:     MD RAID parameters
+#              
+# RELEASE NOTE:
 
-
-item=""
 #echo "OPTIND is now $OPTIND"
 while getopts ":Dm:e:s:d:" optname
 do
     case "$optname" in
 	"e")
 	    # Extract string values
-	    item=$(/sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}')
-	    echo ${item// /}
+	    /sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}' | tr -d [[:space:]]
             ;;
 	"s")
             # echo "Size of the array"
-	    item=$(/sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}')
-	    echo ${item%%\ \(*}
+	    /sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}' | sed -e "s/(.*//" | tr -d [[:space:]]
             ;;
 	"d")
             # echo "Devices in the array"
-	    item=$(/sbin/mdadm --detail ${MD_dev} | tail -n+2 | grep "/dev/" | awk -v x=${OPTARG} '$4 == x {print $5,$6,$7}' )
-	    echo ${item}
+	    /sbin/mdadm --detail ${MD_dev} | tail -n+2 | grep "/dev/" | awk -v x=${OPTARG} '$4 == x {print $5,$6,$7}'
             ;;
 	"m")
 	    # echo "Setting MD RAID"
@@ -54,5 +57,3 @@ do
     esac
 #    echo "OPTIND is now $OPTIND"
 done
-
-
