@@ -37,10 +37,18 @@ do
 	"D")
 	    # echo "Discovery"
 	    echo -e "{\n\t\"data\":["	    
+	    typeset -i nbLines
+	    typeset -i cntLines=0
+	    nbLines=`cat /proc/mdstat | grep ^md | wc -l`
 	    cat /proc/mdstat | grep ^md | while read line
 	    do
+	    	cntLines=${cntLines}+1
 		MDdev=`echo $line | awk '{print $1}'`
-		echo -e "\t{ \"{#MD_DEVICE}\":\t\"/dev/${MDdev}\" },"
+		if [ ${cntLines} -eq ${nbLines} ]; then
+			echo -e "\t{ \"{#MD_DEVICE}\":\t\"/dev/${MDdev}\" }"
+		else
+			echo -e "\t{ \"{#MD_DEVICE}\":\t\"/dev/${MDdev}\" },"
+		fi
 	    done
 	    echo -e "\t]\n}"	    
 	    ;;
