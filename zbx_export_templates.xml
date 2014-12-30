@@ -442,7 +442,7 @@
                     </item_prototypes>
                     <trigger_prototypes>
                         <trigger_prototype>
-                            <expression>{Template MD RAID:mdraid[{#MD_DEVICE},e,&quot;State&quot;].regexp(&quot;(clean|active)&quot;)}=0</expression>
+                            <expression>{Template MD RAID:mdraid[{#MD_DEVICE},e,&quot;State&quot;].regexp(&quot;(degraded|resyncing|recovering|Not Started)&quot;)}=1</expression>
                             <name>{#MD_DEVICE} RAID State</name>
                             <url/>
                             <status>0</status>
