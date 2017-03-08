@@ -21,11 +21,11 @@ TO DO list
 
 Append to zabbix_agentd.conf file
 ----------------
-
+``` sheell
    UserParameter=mdraid[*], sudo /usr/local/bin/zabbix_mdraid.sh -m'$1' -$2'$3'
    
    UserParameter=mdraid.discovery, sudo /usr/local/bin/zabbix_mdraid.sh -D 
-
+```
 Note
 ----
 **don't forget to add zabbix user to sudoers**
