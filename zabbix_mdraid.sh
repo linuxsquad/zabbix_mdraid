@@ -14,6 +14,8 @@
 #              
 # RELEASE NOTE:
 
+typeset JSONFILE="/tmp/zabbix_mdraid_discovery.json"
+
 #echo "OPTIND is now $OPTIND"
 while getopts ":Dm:e:s:d:" optname
 do
@@ -31,27 +33,21 @@ do
 	    /sbin/mdadm --detail ${MD_dev} | tail -n+2 | grep "/dev/" | awk -v x=${OPTARG} '$4 == x {print $5,$6,$7}'
             ;;
 	"m")
-	    # echo "Setting MD RAID"
+            # echo "Setting MD RAID"
 	    MD_dev="${OPTARG}"
 	    ;;
 	"D")
-	    # echo "Discovery"
-	    echo -e "{\n\t\"data\":["	    
-	    typeset -i nbLines
-	    typeset -i cntLines=0
-	    nbLines=`cat /proc/mdstat | grep ^md | wc -l`
-	    cat /proc/mdstat | grep ^md | while read line
-	    do
-	    	cntLines=${cntLines}+1
-		MDdev=`echo $line | awk '{print $1}'`
-		if [ ${cntLines} -eq ${nbLines} ]; then
-			echo -e "\t{ \"{#MD_DEVICE}\":\t\"/dev/${MDdev}\" }"
-		else
-			echo -e "\t{ \"{#MD_DEVICE}\":\t\"/dev/${MDdev}\" },"
-		fi
-	    done
-	    echo -e "\t]\n}"	    
-	    ;;
+           # echo "Discovery"
+            echo -en "{\n \"data\":[" > ${JSONFILE}
+            cat /proc/mdstat | grep ^md | while read line
+            do
+                MDdev=`echo $line | awk '{print $1}'`
+                echo -en "\n { \"{#MD_DEVICE}\":\"/dev/${MDdev}\" }," >> ${JSONFILE}
+            done
+            echo -e " ]\n}" >> ${JSONFILE}
+	    # this awkward way to handle removal of coma from the last line"  	    
+	    cat ${JSONFILE} | sed -e 's/}, ]/}\n ]/'
+            ;;
 	"?")
             echo "Unknown option $OPTARG"
             ;;
@@ -59,9 +55,9 @@ do
             echo "No argument value for option $OPTARG"
             ;;
 	*)
-      # Should not occur
+           # Should not occur
             echo "Unknown error while processing options"
             ;;
     esac
-#    echo "OPTIND is now $OPTIND"
+    #    echo "OPTIND is now $OPTIND"
 done
