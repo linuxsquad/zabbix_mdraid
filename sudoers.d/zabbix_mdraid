@@ -1,0 +1,4 @@
+Defaults:zabbix !requiretty
+Cmnd_Alias ZABBIX_CMD = /usr/local/bin/zabbix_mdraid.sh
+zabbix   ALL = (other_user)  NOPASSWD: ALL
+zabbix   ALL = (root)        NOPASSWD: ZABBIX_CMD
