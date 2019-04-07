@@ -19,17 +19,24 @@ TO DO list
 - auto-discover array devices
 
 
-Append to zabbix_agentd.conf file
+Installation
 ----------------
-``` sheell
-   UserParameter=mdraid[*], sudo /usr/local/bin/zabbix_mdraid.sh -m'$1' -$2'$3'
-   
-   UserParameter=mdraid.discovery, sudo /usr/local/bin/zabbix_mdraid.sh -D 
-```
-Note
-----
-**don't forget to add zabbix user to sudoers**
 
+| File           | Target location                    |
+| ------------------------- | ------------------- |
+| userparameter_mdraid.conf | /etc/zabbix/zabbix_agentd.d/ |
+| zabbix_mdraid.sh | /usr/local/bin/ |
+| zabbix_mdraid | /etc/sudoers.d/ |
+
+Apply necessary permissions
+```
+chmod 400 /etc/sudoers.d/zabbix_mdraid
+chown root:root /etc/sudoers.d/zabbix_mdraid
+```
+
+Note: sudoers drop-in should not be blindly placed in a folder, but inspected first for conflicts with other drop-ins
+
+Restart the agent to finish configuration. e.g. `systemctl restart zabbix-agent`
 
 Referrence:
 -------
