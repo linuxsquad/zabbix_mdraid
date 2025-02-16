@@ -10,7 +10,7 @@
 
 ## Compatibility
 
-- Agent: `Debian 12`, `zabbix-agent2 6.0.14`; Server: zabbix/zabbix-web-nginx-pgsql:7.2.3-ubuntu
+- Agent: `Debian 12`, `zabbix-agent2 6.0.14`; Server: `Docker zabbix/zabbix-web-nginx-pgsql:7.2.3-ubuntu`
 
 ## TO DO list
 
