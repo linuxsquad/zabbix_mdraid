@@ -15,6 +15,7 @@
 # OUTPUT:       MD RAID parameters
 #              
 # RELEASE NOTE:
+#  20250216 - Added "chmod 777 ${JSONFILE}" To avoid permission problems
 
 typeset JSONFILE="/tmp/zabbix_mdraid_discovery.json"
 
@@ -22,23 +23,23 @@ typeset JSONFILE="/tmp/zabbix_mdraid_discovery.json"
 while getopts ":Dm:e:s:d:" optname
 do
     case "$optname" in
-	"e")
+    "e")
         # Extract string values
-	    /sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}' | tr -d [[:space:]]
+        /sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}' | tr -d [[:space:]]
     ;;
-	"s")
-            # echo "Size of the array"
-	    /sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}' | sed -e "s/(.*//" | tr -d [[:space:]]
+    "s")
+        # echo "Size of the array"
+        /sbin/mdadm --detail ${MD_dev} | grep "${OPTARG}" | awk -F":" '{print $2}' | sed -e "s/(.*//" | tr -d [[:space:]]
     ;;
-	"d")
+    "d")
         # echo "Devices in the array"
-	    /sbin/mdadm --detail ${MD_dev} | tail -n+2 | grep "/dev/" | awk -v x=${OPTARG} '$4 == x {print $5,$6,$7}'
+        /sbin/mdadm --detail ${MD_dev} | tail -n+2 | grep "/dev/" | awk -v x=${OPTARG} '$4 == x {print $5,$6,$7}'
     ;;
-	"m")
+    "m")
         # echo "Setting MD RAID"
-	    MD_dev="${OPTARG}"
-	;;
-	"D")
+        MD_dev="${OPTARG}"
+    ;;
+    "D")
         # echo "Discovery"
         echo -en "{\n \"data\":[" > ${JSONFILE}
         cat /proc/mdstat | grep ^md | while read line
@@ -47,17 +48,17 @@ do
             echo -en "\n { \"{#MD_DEVICE}\":\"/dev/${MDdev}\" }," >> ${JSONFILE}
         done
         echo -e " ]\n}" >> ${JSONFILE}
-	    # this awkward way to handle removal of coma from the last line"  	    
-	    cat ${JSONFILE} | sed -e 's/}, ]/}\n ]/'
+        # this awkward way to handle removal of coma from the last line"          
+        cat ${JSONFILE} | sed -e 's/}, ]/}\n ]/'
         chmod 777 ${JSONFILE}
     ;;
-	"?")
+    "?")
         echo "Unknown option $OPTARG"
     ;;
-	":")
+    ":")
         echo "No argument value for option $OPTARG"
     ;;
-	*)
+    *)
         # Should not occur
         echo "Unknown error while processing options"
     ;;
